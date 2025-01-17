@@ -1,30 +1,15 @@
-[gd_scene load_steps=29 format=3 uid="uid://dkuc8r0m3tvyp"]
+[gd_scene load_steps=30 format=3 uid="uid://dkuc8r0m3tvyp"]
 
 [ext_resource type="Script" path="res://scripts/multiplayer/multiplayer_controller.gd" id="1_gv0p7"]
 [ext_resource type="Texture2D" uid="uid://b8cmjj8vq3r8d" path="res://assets/sprites/knight.png" id="2_gfw1w"]
 [ext_resource type="Script" path="res://scripts/multiplayer/multiplayer_input.gd" id="2_wbuxn"]
+[ext_resource type="Script" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="3_gig3h"]
+[ext_resource type="Script" path="res://addons/netfox/tick-interpolator.gd" id="4_a2p31"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_c24xw"]
 properties/0/path = NodePath(".:player_id")
 properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath(".:position")
-properties/1/spawn = true
-properties/1/replication_mode = 1
-properties/2/path = NodePath(".:do_jump")
-properties/2/spawn = true
-properties/2/replication_mode = 1
-properties/3/path = NodePath(".:_is_on_floor")
-properties/3/spawn = true
-properties/3/replication_mode = 1
-properties/4/path = NodePath(".:direction")
-properties/4/spawn = true
-properties/4/replication_mode = 1
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_vn0fp"]
-properties/0/path = NodePath("InputSynchronizer:input_direction")
-properties/0/spawn = true
-properties/0/replication_mode = 1
+properties/0/replication_mode = 0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eq0sc"]
 atlas = ExtResource("2_gfw1w")
@@ -194,17 +179,27 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_3kii6"]
 radius = 5.0
 
-[node name="MultiplayerPlayer" type="CharacterBody2D"]
+[node name="MultiplayerPlayer" type="CharacterBody2D" node_paths=PackedStringArray("input")]
 collision_layer = 2
 script = ExtResource("1_gv0p7")
+input = NodePath("Input")
 
 [node name="PlayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_c24xw")
 
-[node name="InputSynchronizer" type="MultiplayerSynchronizer" parent="."]
-unique_name_in_owner = true
-replication_config = SubResource("SceneReplicationConfig_vn0fp")
+[node name="Input" type="Node" parent="."]
 script = ExtResource("2_wbuxn")
+
+[node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("3_gig3h")
+root = NodePath("..")
+state_properties = Array[String]([":global_transform", ":velocity"])
+input_properties = Array[String](["Input:input_direction", "Input:input_jump"])
+
+[node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("4_a2p31")
+root = NodePath("..")
+properties = Array[String]([":global_transform"])
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -12)

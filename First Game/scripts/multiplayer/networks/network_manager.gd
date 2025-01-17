@@ -30,6 +30,7 @@ func set_active_network(active_network_scene):
 	var network = active_network_scene.instantiate()
 	active_network = network
 	active_network.players_spawn_node = players_spawn_node
+	MultiplayerManager.players_spawn_node = players_spawn_node
 	add_child(active_network)
 
 
