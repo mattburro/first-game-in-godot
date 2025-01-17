@@ -30,7 +30,7 @@ func initialize_steam():
 	#steam_id = Steam.getSteamId()
 	steam_username = Steam.getPersonaName()
 	
-	print("Steam ID: " % steam_id)
+	#print("Steam ID: " % steam_id)
 	
 	if not is_owned:
 		get_tree().quit()
