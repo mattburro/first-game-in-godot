@@ -19,7 +19,7 @@ func _process(delta: float) -> void:
 
 
 func initialize_steam():
-	var init_response: Dictionary# = Steam.steamInitEx():
+	var init_response: Dictionary = Steam.steamInitEx()
 	print("Steam initialized: %s" % init_response)
 	
 	if init_response["status"] > 0:
